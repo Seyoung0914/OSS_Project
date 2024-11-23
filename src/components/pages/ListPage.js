@@ -44,7 +44,7 @@ const ListPage = ({ getMusic }) => {
               <p>아티스트: {music.artist}</p>
             </div>
             <div>
-              <Button variant="warning" className="me-2" onClick={() => navigate(`/edit/${music.id}`)}>
+              <Button variant="warning" className="me-2" onClick={() => navigate(`/update/${music.id}`)}>
                 수정
               </Button>
               <Button variant="danger" onClick={() => handleDelete(music.id)}>

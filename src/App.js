@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import ListPage from './components/pages/ListPage';
 import CreatePage from './components/pages/CreatePage';
-import EditPage from './components/pages/EditPage';
+import UpdatePage from './components/pages/UpdatePage';
 import DetailPage from './components/pages/DetailPage';
 
 const App = () => {
-  // 음악 데이터를 가져오는 함수
+  const [musicData, setMusicData] = useState([]);
+
   const getMusic = (callback) => {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://672819af270bd0b975545de3.mockapi.io/music');
-    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send();
 
     xhr.onload = () => {
       if (xhr.status === 200) {
         const res = JSON.parse(xhr.response);
-        callback(res); // 데이터셋을 업데이트하는 콜백 호출
+        setMusicData(res);
+        if (callback) callback(res);
       } else {
         console.error(`Error: ${xhr.status} ${xhr.statusText}`);
       }
@@ -31,7 +32,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<ListPage getMusic={getMusic} />} />
           <Route path="/create" element={<CreatePage getMusic={getMusic} />} />
-          <Route path="/edit/:id" element={<EditPage getMusic={getMusic} />} />
+          <Route path="/update/:id" element={<UpdatePage getMusic={getMusic} musicData={musicData} />} />
           <Route path="/detail/:id" element={<DetailPage />} />
         </Routes>
       </div>
