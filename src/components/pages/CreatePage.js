@@ -56,7 +56,7 @@ const CreatePage = () => {
     xhr.onload = () => {
       if (xhr.status === 201) {
         console.log('음악 추가 성공:', formData);
-        navigate('/'); // 메인 페이지로 이동
+        navigate('/list'); // 메인 페이지로 이동
       } else {
         console.error('음악 추가 실패:', xhr.status, xhr.statusText);
       }

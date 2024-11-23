@@ -68,7 +68,7 @@ const UpdatePage = ({ musicData, getMusic }) => {
     }
 
     getMusic(); // 최신 데이터 가져오기
-    navigate('/'); // 메인 페이지로 이동
+    navigate('/list'); // 메인 페이지로 이동
   };
 
   return (
