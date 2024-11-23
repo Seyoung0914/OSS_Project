@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ListPage from './components/pages/ListPage';
 import CreatePage from './components/pages/CreatePage';
 import UpdatePage from './components/pages/UpdatePage';
@@ -31,6 +31,7 @@ const App = () => {
         <h1>음악 관리 시스템</h1>
         <Routes>
           <Route path="/" element={<ListPage getMusic={getMusic} />} />
+          <Route path="/list" element={<Navigate to="/" />} /> {/* /list로 접근 시 /로 리다이렉트 */}
           <Route path="/create" element={<CreatePage getMusic={getMusic} />} />
           <Route path="/update/:id" element={<UpdatePage getMusic={getMusic} musicData={musicData} />} />
           <Route path="/detail/:id" element={<DetailPage />} />
