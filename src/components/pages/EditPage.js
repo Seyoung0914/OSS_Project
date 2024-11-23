@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const EditPage = ({ musicData, getMusic }) => {
+const EditPage = ({ getMusic }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
@@ -9,9 +9,20 @@ const EditPage = ({ musicData, getMusic }) => {
 
   // 음악 데이터 로드
   useEffect(() => {
-    const music = musicData.find((item) => item.id === id);
-    if (music) setFormData(music);
-  }, [id, musicData]);
+    const fetchMusic = async () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `https://672819af270bd0b975545de3.mockapi.io/music/${id}`);
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          setFormData(JSON.parse(xhr.response));
+        } else {
+          console.error('데이터 로드 실패:', xhr.status, xhr.statusText);
+        }
+      };
+      xhr.send();
+    };
+    fetchMusic();
+  }, [id]);
 
   // 필드 업데이트 및 서버 반영
   const handleUpdate = (field, value) => {
@@ -19,38 +30,23 @@ const EditPage = ({ musicData, getMusic }) => {
     setEditCount((count) => count + 1); // 수정 횟수 증가
 
     // PUT 요청으로 서버에 데이터 반영
+    const updatedData = { ...formData, [field]: value };
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', `https://672819af270bd0b975545de3.mockapi.io/music/${id}`);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    xhr.send(JSON.stringify({ ...formData, [field]: value }));
+    xhr.send(JSON.stringify(updatedData));
     xhr.onload = () => {
       if (xhr.status === 200) {
-        console.log('수정 완료:', field, value);
+        console.log('수정 완료:', updatedData);
       } else {
         console.error('수정 실패:', xhr.status, xhr.statusText);
       }
     };
   };
 
-  // 삭제 함수
-  const handleDelete = () => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `https://672819af270bd0b975545de3.mockapi.io/music/${id}`);
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        getMusic();
-        navigate('/'); // 삭제 후 메인 페이지로 이동
-      } else {
-        console.error('삭제 실패:', xhr.status, xhr.statusText);
-      }
-    };
-    xhr.send();
-  };
-
   // 확인 버튼 클릭 시 데이터 갱신 후 메인 페이지로 이동
   const handleConfirm = () => {
-    getMusic(); // 최신 데이터 가져오기
-    navigate('/');
+    navigate('/'); // 메인 페이지로 이동
   };
 
   return (
@@ -94,9 +90,6 @@ const EditPage = ({ musicData, getMusic }) => {
       <div className="mt-3">
         <button className="btn btn-primary me-2" onClick={handleConfirm}>
           확인
-        </button>
-        <button className="btn btn-danger" onClick={handleDelete}>
-          삭제하기
         </button>
       </div>
     </div>
